@@ -69,8 +69,8 @@ module Monza
       end
     end # end initialize
 
-    def self.verify(data, options = {})
-      client = Client.production
+    def self.verify(data, client_override = nil, options = {})
+      client = client_override || Client.development
 
       begin
         client.verify(data, options)
