@@ -4,25 +4,11 @@ require 'uri'
 
 module Monza
   class Client
-    attr_accessor :verification_url
-    attr_writer :shared_secret
+    attr_accessor :verification_url, :shared_secret
 
-    PRODUCTION_URL = "https://buy.itunes.apple.com/verifyReceipt"
-    DEVELOPMENT_URL = "https://sandbox.itunes.apple.com/verifyReceipt"
-
-    def self.development
-      client = self.new
-      client.verification_url = DEVELOPMENT_URL
-      client
-    end
-
-    def self.production
-      client = self.new
-      client.verification_url = PRODUCTION_URL
-      client
-    end
-
-    def initialize
+    def initialize(verification_url, shared_secret)
+      @verification_url = verification_url
+      @shared_secret = shared_secret
     end
 
     def verify(data, options = {})
@@ -51,7 +37,7 @@ module Monza
         'receipt-data' => data
       }
 
-      parameters['password'] = options[:shared_secret] if options[:shared_secret]
+      parameters['password'] = self.shared_secret
       parameters['exclude-old-transactions'] = options[:exclude_old_transactions] if options[:exclude_old_transactions]
 
       uri = URI(@verification_url)
